@@ -1,0 +1,745 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --purple:#6C47FF;--purple-light:#8B6BFF;--purple-soft:#EDE9FF;--purple-dark:#1A103A;
+    --orange:#FF6B35;--orange-soft:#FFF0EB;--teal:#00C9A7;--teal-soft:#E0FBF6;
+    --bg:#F8F7FF;--sidebar-bg:#FFFFFF;--card:#FFFFFF;--border:#E8E5F5;
+    --text:#1F1535;--text-mid:#5B527A;--text-muted:#9590B0;
+    --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+    --radius:10px;--radius-sm:6px;
+  }
+  body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:15px;line-height:1.65}
+
+  .app{display:flex;flex-direction:column;min-height:600px}
+
+  /* TOP NAV */
+  .topnav{background:var(--purple-dark);display:flex;align-items:center;padding:0 1.5rem;height:54px;gap:1rem;position:sticky;top:0;z-index:100}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:600;color:#fff;font-size:15px;text-decoration:none;margin-right:auto}
+  .brand-dot{width:28px;height:28px;background:var(--purple);border-radius:8px;display:flex;align-items:center;justify-content:center}
+  .brand-icon{font-size:14px}
+  .nav-tabs{display:flex;gap:2px;background:rgba(255,255,255,.08);border-radius:8px;padding:3px}
+  .nav-tab{padding:5px 16px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;color:rgba(255,255,255,.65);border:none;background:none;transition:all .2s}
+  .nav-tab.active{background:var(--purple);color:#fff}
+  .nav-tab:hover:not(.active){color:#fff;background:rgba(255,255,255,.12)}
+  .badge{background:var(--orange);color:#fff;font-size:10px;padding:1px 6px;border-radius:20px;margin-left:4px;font-weight:600}
+
+  /* LAYOUT */
+  .layout{display:flex;flex:1}
+
+  /* SIDEBAR */
+  .sidebar{width:240px;background:var(--sidebar-bg);border-right:1px solid var(--border);padding:1rem 0;overflow-y:auto;flex-shrink:0}
+  .sidebar-label{font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--text-muted);padding:.5rem 1.25rem .25rem;text-transform:uppercase}
+  .sidebar-module{display:flex;flex-direction:column}
+  .sidebar-item{display:flex;align-items:center;gap:8px;padding:6px 1.25rem;cursor:pointer;transition:all .15s;border-left:2px solid transparent;font-size:13.5px;color:var(--text-mid);font-weight:400}
+  .sidebar-item:hover{background:#F3F0FF;color:var(--purple)}
+  .sidebar-item.active{background:#EDE9FF;color:var(--purple);border-left-color:var(--purple);font-weight:500}
+  .sidebar-item.active .s-icon{background:var(--purple);color:#fff}
+  .s-icon{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;background:#E8E5F5;color:var(--text-mid);flex-shrink:0;transition:all .15s}
+  .sidebar-sub{padding:3px 1.25rem 3px 3.2rem;cursor:pointer;font-size:12.5px;color:var(--text-muted);transition:all .15s}
+  .sidebar-sub:hover{color:var(--purple)}
+  .sidebar-sub.active{color:var(--purple);font-weight:500}
+  .sidebar-divider{height:1px;background:var(--border);margin:.5rem 1.25rem}
+
+  /* MAIN CONTENT */
+  .main{flex:1;padding:0;overflow-y:auto}
+  .content{max-width:680px;padding:2rem 2rem 3rem}
+
+  /* BREADCRUMB */
+  .breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);margin-bottom:1.5rem}
+  .breadcrumb span{color:var(--purple);font-weight:500}
+  .bc-sep{color:var(--border)}
+
+  /* PAGE HEADER */
+  .page-header{margin-bottom:1.5rem}
+  .page-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.04em;margin-bottom:.75rem}
+  .page-title{font-size:1.6rem;font-weight:600;color:var(--text);line-height:1.25;margin-bottom:.5rem}
+  .page-desc{font-size:14px;color:var(--text-mid);line-height:1.65}
+
+  /* STEP CARDS */
+  .step-list{display:flex;flex-direction:column;gap:.75rem;margin:1.25rem 0}
+  .step-card{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--card)}
+  .step-head{display:flex;align-items:center;gap:10px;padding:.75rem 1rem;background:#FAFAFE}
+  .step-num{width:24px;height:24px;border-radius:50%;background:var(--purple);color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .step-title{font-size:13.5px;font-weight:500;color:var(--text)}
+  .step-body{padding:.75rem 1rem;border-top:1px solid var(--border);font-size:13px;color:var(--text-mid);line-height:1.6}
+  .step-body p{margin-bottom:.5rem}
+  .step-body p:last-child{margin-bottom:0}
+
+  /* MINI MOCKUP */
+  .mockup{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin:1rem 0;background:#fff}
+  .mockup-bar{height:28px;background:var(--purple-dark);display:flex;align-items:center;padding:0 10px;gap:5px}
+  .mb-dot{width:7px;height:7px;border-radius:50%}
+  .mb-title{font-size:10px;color:rgba(255,255,255,.6);margin:0 auto}
+  .mockup-body{padding:1rem}
+  .mock-field{border:1px solid var(--border);border-radius:5px;padding:6px 10px;font-size:12px;color:var(--text-mid);background:#FAFAFE;margin-bottom:.5rem;display:flex;align-items:center;gap:6px}
+  .mock-field-label{font-size:10px;color:var(--text-muted);margin-bottom:2px}
+  .mock-btn{padding:7px 16px;border-radius:5px;font-size:12px;font-weight:500;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:5px}
+  .mock-btn.primary{background:var(--purple);color:#fff}
+  .mock-btn.outline{background:#fff;border:1px solid var(--border);color:var(--text-mid)}
+  .mock-card{border:1px solid var(--border);border-radius:7px;padding:.6rem .75rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+  .mock-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0}
+  .mock-name{font-size:12px;font-weight:500;color:var(--text)}
+  .mock-sub{font-size:10.5px;color:var(--text-muted)}
+  .mock-badge{padding:2px 7px;border-radius:20px;font-size:9px;font-weight:600;margin-left:auto;flex-shrink:0}
+  .mock-stars{color:#F59E0B;font-size:11px}
+  .mock-row{display:flex;gap:.5rem;margin-bottom:.5rem}
+  .mock-tag{padding:3px 8px;border-radius:4px;font-size:10px;font-weight:500}
+
+  /* CALLOUT */
+  .callout{border-radius:var(--radius-sm);padding:.75rem 1rem;margin:1rem 0;font-size:13px;display:flex;gap:.5rem;align-items:flex-start;border-left:3px solid}
+  .callout.tip{background:var(--teal-soft);border-color:var(--teal);color:#086B5A}
+  .callout.warn{background:var(--orange-soft);border-color:var(--orange);color:#8A3010}
+  .callout.info{background:var(--purple-soft);border-color:var(--purple);color:#3B2493}
+  .callout-icon{flex-shrink:0;font-weight:700;font-size:12px;margin-top:1px}
+
+  /* SECTION LINK GRID */
+  .section-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:1rem 0}
+  .section-link{border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;cursor:pointer;transition:all .15s;background:var(--card)}
+  .section-link:hover{border-color:var(--purple);background:var(--purple-soft)}
+  .section-link:hover .sl-title{color:var(--purple)}
+  .sl-icon{font-size:18px;margin-bottom:.25rem}
+  .sl-title{font-size:13px;font-weight:500;color:var(--text)}
+  .sl-desc{font-size:11.5px;color:var(--text-muted)}
+
+  /* NAV PREV/NEXT */
+  .doc-nav{display:flex;gap:.5rem;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .doc-nav-btn{flex:1;border:1px solid var(--border);border-radius:var(--radius);padding:.75rem 1rem;cursor:pointer;background:var(--card);transition:all .15s;text-align:left}
+  .doc-nav-btn:hover{border-color:var(--purple);background:var(--purple-soft)}
+  .doc-nav-btn.next{text-align:right}
+  .dnb-label{font-size:11px;color:var(--text-muted);margin-bottom:2px}
+  .dnb-title{font-size:13px;font-weight:500;color:var(--text)}
+
+  /* ── FEEDBACK PAGE ── */
+  .fb-page{padding:2rem;max-width:620px}
+  .fb-header{margin-bottom:1.75rem}
+  .fb-title{font-size:1.5rem;font-weight:600;margin-bottom:.4rem}
+  .fb-desc{font-size:14px;color:var(--text-mid)}
+  .fb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1rem}
+  .fb-label{font-size:12px;font-weight:600;color:var(--text-mid);letter-spacing:.03em;margin-bottom:.5rem;display:block;text-transform:uppercase}
+  .fb-input{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;font-family:var(--font);font-size:13.5px;color:var(--text);background:#FAFAFE;outline:none;transition:border .15s}
+  .fb-input:focus{border-color:var(--purple);background:#fff}
+  .fb-select{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;font-family:var(--font);font-size:13.5px;color:var(--text);background:#FAFAFE;outline:none;appearance:none;cursor:pointer}
+  .fb-textarea{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-family:var(--font);font-size:13.5px;color:var(--text);background:#FAFAFE;resize:vertical;min-height:110px;outline:none;transition:border .15s;line-height:1.6}
+  .fb-textarea:focus{border-color:var(--purple);background:#fff}
+  .star-row{display:flex;gap:6px}
+  .star{font-size:26px;cursor:pointer;color:#D1CCE8;transition:all .15s;line-height:1}
+  .star.lit{color:#F59E0B}
+  .star:hover{transform:scale(1.15)}
+  .module-pills{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.25rem}
+  .module-pill{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:#FAFAFE;color:var(--text-mid);transition:all .15s}
+  .module-pill.selected{background:var(--purple-soft);border-color:var(--purple);color:var(--purple)}
+  .type-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem}
+  .type-card{border:1px solid var(--border);border-radius:var(--radius-sm);padding:.6rem .8rem;cursor:pointer;transition:all .15s;background:#FAFAFE}
+  .type-card.selected{border-color:var(--purple);background:var(--purple-soft)}
+  .type-card.selected .tc-title{color:var(--purple)}
+  .tc-icon{font-size:16px;margin-bottom:2px}
+  .tc-title{font-size:12.5px;font-weight:500;color:var(--text)}
+  .submit-btn{width:100%;padding:11px;border-radius:var(--radius-sm);background:var(--purple);color:#fff;border:none;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .submit-btn:hover{background:#5538E8;transform:translateY(-1px)}
+  .submit-btn:active{transform:translateY(0)}
+  .success-card{background:var(--teal-soft);border:1px solid var(--teal);border-radius:var(--radius);padding:1.5rem;text-align:center}
+  .success-icon{font-size:32px;margin-bottom:.5rem}
+  .char-count{font-size:11px;color:var(--text-muted);text-align:right;margin-top:3px}
+  .fb-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+</style>
+
+<div class="app" id="app">
+  <nav class="topnav">
+    <a class="brand" href="#">
+      <div class="brand-dot"><span class="brand-icon">🎓</span></div>
+      <span>CampusBuddy</span>
+    </a>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showPage('help')">Help Center</button>
+      <button class="nav-tab" onclick="showPage('feedback')">Feedback<span class="badge" id="fb-badge" style="display:none">!</span></button>
+    </div>
+  </nav>
+
+  <!-- HELP PAGE -->
+  <div id="help-page" class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-label">Getting Started</div>
+      <div class="sidebar-item active" data-section="welcome" onclick="selectSection(this,'welcome')">
+        <span class="s-icon">🏠</span> Overview
+      </div>
+      <div class="sidebar-item" data-section="register" onclick="selectSection(this,'register')">
+        <span class="s-icon">✉️</span> Registration & Login
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-label">Modules</div>
+      <div class="sidebar-item" data-section="studybuddy" onclick="selectSection(this,'studybuddy')">
+        <span class="s-icon">📚</span> StudyBuddy
+      </div>
+      <div class="sidebar-item" data-section="campusmarket" onclick="selectSection(this,'campusmarket')">
+        <span class="s-icon">🛒</span> CampusMarket
+      </div>
+      <div class="sidebar-item" data-section="housinghub" onclick="selectSection(this,'housinghub')">
+        <span class="s-icon">🏠</span> Housing Hub
+      </div>
+      <div class="sidebar-item" data-section="eventboard" onclick="selectSection(this,'eventboard')">
+        <span class="s-icon">📅</span> EventBoard
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-label">AI & Trust</div>
+      <div class="sidebar-item" data-section="buddybot" onclick="selectSection(this,'buddybot')">
+        <span class="s-icon">🤖</span> buddy-bot
+      </div>
+      <div class="sidebar-item" data-section="trustengine" onclick="selectSection(this,'trustengine')">
+        <span class="s-icon">🛡️</span> Trust Engine
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- WELCOME -->
+      <div id="sec-welcome" class="content">
+        <div class="breadcrumb">Help Center <span class="bc-sep">›</span> <span>Overview</span></div>
+        <div class="page-header">
+          <div class="page-tag" style="background:#EDE9FF;color:#4B2FD4">📘 &nbsp;Welcome</div>
+          <div class="page-title">Welcome to CampusBuddy</div>
+          <div class="page-desc">Your all-in-one verified platform for peer tutoring, campus commerce, student housing, and event discovery. Everything you need — in one trusted app.</div>
+        </div>
+        <div class="callout info"><span class="callout-icon">ℹ</span>CampusBuddy is only available to verified university students. You'll need your official university email to sign up.</div>
+        <div class="section-grid">
+          <div class="section-link" onclick="selectSectionById('studybuddy')">
+            <div class="sl-icon">📚</div>
+            <div class="sl-title">StudyBuddy</div>
+            <div class="sl-desc">Find tutors, join study groups & get AI help</div>
+          </div>
+          <div class="section-link" onclick="selectSectionById('campusmarket')">
+            <div class="sl-icon">🛒</div>
+            <div class="sl-title">CampusMarket</div>
+            <div class="sl-desc">Buy, sell & donate items to fellow students</div>
+          </div>
+          <div class="section-link" onclick="selectSectionById('housinghub')">
+            <div class="sl-icon">🏠</div>
+            <div class="sl-title">Housing Hub</div>
+            <div class="sl-desc">Browse accommodation & find roommates</div>
+          </div>
+          <div class="section-link" onclick="selectSectionById('eventboard')">
+            <div class="sl-icon">📅</div>
+            <div class="sl-title">EventBoard</div>
+            <div class="sl-desc">Discover campus events & RSVP instantly</div>
+          </div>
+        </div>
+        <div class="doc-nav">
+          <div class="doc-nav-btn next" onclick="selectSectionById('register')">
+            <div class="dnb-label">Next</div>
+            <div class="dnb-title">Registration & Login →</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="sec-register" class="content" style="display:none">
+        <div class="breadcrumb">Help Center <span class="bc-sep">›</span> Getting Started <span class="bc-sep">›</span> <span>Registration & Login</span></div>
+        <div class="page-header">
+          <div class="page-tag" style="background:#EDE9FF;color:#4B2FD4">✉️ &nbsp;Getting Started</div>
+          <div class="page-title">Registration & Login</div>
+          <div class="page-desc">Create your CampusBuddy account using your official university email, verify it, and start accessing all platform services.</div>
+        </div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">1</span><span class="step-title">Open the app and tap Sign Up</span></div>
+            <div class="step-body">
+              <div class="mockup">
+                <div class="mockup-bar"><span class="mb-dot" style="background:#FF5F57"></span><span class="mb-dot" style="background:#FFBD2E"></span><span class="mb-dot" style="background:#28C840"></span><span class="mb-title">CampusBuddy — Sign Up</span></div>
+                <div class="mockup-body">
+                  <div class="mock-field-label">Full name</div>
+                  <div class="mock-field">👤 &nbsp;Your full name</div>
+                  <div class="mock-field-label">University email</div>
+                  <div class="mock-field" style="border-color:var(--purple)">✉️ &nbsp;yourname@students.university.ac.ke</div>
+                  <div class="mock-field-label">Password</div>
+                  <div class="mock-field">🔒 &nbsp;••••••••</div>
+                  <div style="margin-top:.75rem"><button class="mock-btn primary" style="width:100%;justify-content:center">Create Account</button></div>
+                  <div style="text-align:center;font-size:11px;color:var(--text-muted);margin-top:.5rem">Already have an account? <span style="color:var(--purple)">Sign in</span></div>
+                </div>
+              </div>
+              <p>Enter your full name, your <strong>official university email address</strong>, and choose a secure password. Only emails matching an approved university domain are accepted.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">2</span><span class="step-title">Enter your verification code</span></div>
+            <div class="step-body">
+              <div class="mockup">
+                <div class="mockup-bar"><span class="mb-dot" style="background:#FF5F57"></span><span class="mb-dot" style="background:#FFBD2E"></span><span class="mb-dot" style="background:#28C840"></span><span class="mb-title">Email Verification</span></div>
+                <div class="mockup-body">
+                  <p style="font-size:12px;color:var(--text-mid);margin-bottom:.75rem">A verification code was sent to <span style="color:var(--purple);font-weight:500">yourname@students.university.ac.ke</span></p>
+                  <div style="display:flex;gap:.4rem;justify-content:center;margin-bottom:.75rem">
+                    <div style="width:38px;height:40px;border:2px solid var(--purple);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;color:var(--purple)">4</div>
+                    <div style="width:38px;height:40px;border:1px solid var(--border);border-radius:5px;background:#FAFAFE"></div>
+                    <div style="width:38px;height:40px;border:1px solid var(--border);border-radius:5px;background:#FAFAFE"></div>
+                    <div style="width:38px;height:40px;border:1px solid var(--border);border-radius:5px;background:#FAFAFE"></div>
+                    <div style="width:38px;height:40px;border:1px solid var(--border);border-radius:5px;background:#FAFAFE"></div>
+                    <div style="width:38px;height:40px;border:1px solid var(--border);border-radius:5px;background:#FAFAFE"></div>
+                  </div>
+                  <button class="mock-btn primary" style="width:100%;justify-content:center">Verify</button>
+                  <div style="text-align:center;font-size:11px;color:var(--purple);margin-top:.5rem">Resend code</div>
+                </div>
+              </div>
+              <p>Check your university email inbox (and spam folder). Enter the 6-digit OTP code. The code expires after a short time — request a new one if needed.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">3</span><span class="step-title">Sign in to your account</span></div>
+            <div class="step-body"><p>Once verified, tap <strong>Sign In</strong> on the home screen. Enter your university email and password. You'll be taken to the Home dashboard where all four modules are accessible from the bottom navigation bar.</p>
+            <div class="callout tip"><span class="callout-icon">✓</span>Use <strong>Forgot Password?</strong> to get a reset code sent to your email if you lose access.</div></div>
+          </div>
+        </div>
+        <div class="doc-nav">
+          <div class="doc-nav-btn" onclick="selectSectionById('welcome')"><div class="dnb-label">Previous</div><div class="dnb-title">← Overview</div></div>
+          <div class="doc-nav-btn next" onclick="selectSectionById('studybuddy')"><div class="dnb-label">Next</div><div class="dnb-title">StudyBuddy →</div></div>
+        </div>
+      </div>
+
+      <!-- STUDYBUDDY -->
+      <div id="sec-studybuddy" class="content" style="display:none">
+        <div class="breadcrumb">Help Center <span class="bc-sep">›</span> Modules <span class="bc-sep">›</span> <span>StudyBuddy</span></div>
+        <div class="page-header">
+          <div class="page-tag" style="background:#EDE9FF;color:#4B2FD4">📚 &nbsp;StudyBuddy</div>
+          <div class="page-title">StudyBuddy — Academic Support</div>
+          <div class="page-desc">Connect with peer tutors, form study groups, and get instant AI-powered academic help through buddy-bot.</div>
+        </div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">1</span><span class="step-title">Finding & booking a tutor</span></div>
+            <div class="step-body">
+              <div class="mockup">
+                <div class="mockup-bar"><span class="mb-dot" style="background:#FF5F57"></span><span class="mb-dot" style="background:#FFBD2E"></span><span class="mb-dot" style="background:#28C840"></span><span class="mb-title">StudyBuddy — Find a Tutor</span></div>
+                <div class="mockup-body">
+                  <div class="mock-row">
+                    <div class="mock-tag" style="background:var(--purple-soft);color:var(--purple)">All</div>
+                    <div class="mock-tag" style="background:#F3F4F6;color:var(--text-mid)">Programming</div>
+                    <div class="mock-tag" style="background:#F3F4F6;color:var(--text-mid)">Mathematics</div>
+                    <div class="mock-tag" style="background:#F3F4F6;color:var(--text-mid)">Finance</div>
+                  </div>
+                  <div class="mock-card">
+                    <div class="mock-avatar" style="background:var(--purple)">JM</div>
+                    <div><div class="mock-name">Tutor — Programming in Python</div><div class="mock-sub">KSh 1,000/hr · <span class="mock-stars">★★★★★</span> 4.9 (51)</div></div>
+                    <button class="mock-btn primary" style="margin-left:auto;font-size:10px;padding:4px 10px">Book</button>
+                  </div>
+                  <div class="mock-card">
+                    <div class="mock-avatar" style="background:var(--orange)">AK</div>
+                    <div><div class="mock-name">Tutor — Human Anatomy</div><div class="mock-sub">KSh 950/hr · <span class="mock-stars">★★★★★</span> 4.7 (44)</div></div>
+                    <button class="mock-btn primary" style="margin-left:auto;font-size:10px;padding:4px 10px">Book</button>
+                  </div>
+                </div>
+              </div>
+              <p>Tap <strong>Study</strong> in the bottom navigation bar → <strong>Find Tutors</strong>. Use the subject filter chips to narrow results. Tap a tutor card to view their full profile, rating, hourly rate, and weekly availability. Tap <strong>Book Session</strong> to request a tutoring session.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">2</span><span class="step-title">Creating or joining study groups</span></div>
+            <div class="step-body">
+              <p>From the StudyBuddy home screen, tap <strong>Study Groups</strong>. Tap <strong>+</strong> to create a new group — give it a name, subject, description, and a maximum member cap. To join an existing group, browse the list and tap <strong>Join</strong>. Inside a group you'll find tabs for <em>Members</em>, <em>Sessions</em>, and a <em>Discussion</em> chat.</p>
+              <div class="callout tip"><span class="callout-icon">✓</span>After a tutoring session is marked complete, you'll be prompted to leave a star rating and review for your tutor. This helps other students find great tutors.</div>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">3</span><span class="step-title">Using Buddy AI Help</span></div>
+            <div class="step-body"><p>From the StudyBuddy home, tap <strong>Buddy AI Help</strong>. Type any academic question — for example, <em>"Explain the chain rule"</em> or <em>"How does osmosis work?"</em> — and buddy-bot will respond with clear, step-by-step explanations. See the buddy-bot section for more.</p></div>
+          </div>
+        </div>
+        <div class="doc-nav">
+          <div class="doc-nav-btn" onclick="selectSectionById('register')"><div class="dnb-label">Previous</div><div class="dnb-title">← Registration & Login</div></div>
+          <div class="doc-nav-btn next" onclick="selectSectionById('campusmarket')"><div class="dnb-label">Next</div><div class="dnb-title">CampusMarket →</div></div>
+        </div>
+      </div>
+
+      <!-- CAMPUSMARKET -->
+      <div id="sec-campusmarket" class="content" style="display:none">
+        <div class="breadcrumb">Help Center <span class="bc-sep">›</span> Modules <span class="bc-sep">›</span> <span>CampusMarket</span></div>
+        <div class="page-header">
+          <div class="page-tag" style="background:#FFF0EB;color:#B84420">🛒 &nbsp;CampusMarket</div>
+          <div class="page-title">CampusMarket — Buy, Sell & Donate</div>
+          <div class="page-desc">A verified peer-to-peer marketplace for buying, selling, or donating goods within your university community. All users are verified students.</div>
+        </div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">1</span><span class="step-title">Browsing listings</span></div>
+            <div class="step-body">
+              <div class="mockup">
+                <div class="mockup-bar"><span class="mb-dot" style="background:#FF5F57"></span><span class="mb-dot" style="background:#FFBD2E"></span><span class="mb-dot" style="background:#28C840"></span><span class="mb-title">CampusMarket — Browse</span></div>
+                <div class="mockup-body">
+                  <div class="mock-row" style="margin-bottom:.6rem">
+                    <div class="mock-tag" style="background:var(--orange-soft);color:var(--orange)">All</div>
+                    <div class="mock-tag" style="background:#F3F4F6;color:var(--text-mid)">Electronics</div>
+                    <div class="mock-tag" style="background:#F3F4F6;color:var(--text-mid)">Books</div>
+                    <div class="mock-tag" style="background:#F3F4F6;color:var(--text-mid)">Free</div>
+                  </div>
+                  <div class="mock-card">
+                    <div style="width:36px;height:36px;background:#EDE9FF;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:18px">🎮</div>
+                    <div><div class="mock-name">Playstation Controller</div><div class="mock-sub">Good condition · KSh 500</div></div>
+                    <div class="mock-badge" style="background:var(--orange-soft);color:var(--orange)">Sale</div>
+                  </div>
+                  <div class="mock-card">
+                    <div style="width:36px;height:36px;background:#E0FBF6;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:18px">📕</div>
+                    <div><div class="mock-name">Data Structures Textbook</div><div class="mock-sub">Like new · KSh 0</div></div>
+                    <div class="mock-badge" style="background:var(--teal-soft);color:#07856F">Free</div>
+                  </div>
+                </div>
+              </div>
+              <p>Tap <strong>Market</strong> in the bottom bar → <strong>Browse Listings</strong>. Use the category chips to filter by Electronics, Books, Furniture, Clothing, Sports, or Other. Tap any listing to view full details and contact the seller.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">2</span><span class="step-title">Posting an item for sale or donation</span></div>
+            <div class="step-body"><p>Tap <strong>Post an Item</strong> from the CampusMarket home. Choose <strong>Sell an Item</strong> or <strong>Donate for Free</strong>. Upload up to 5 photos, enter a title, select a category and condition, set a price (sale only), and add a description. Tap <strong>Preview Listing</strong>, then <strong>Publish Listing</strong>.</p>
+            <div class="callout warn"><span class="callout-icon">!</span>All commerce on CampusMarket is listing + negotiation only. Payments are handled offline between parties. Never share financial details in the in-app chat.</div></div>
+          </div>
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">3</span><span class="step-title">Messaging a seller & leaving a review</span></div>
+            <div class="step-body"><p>On a listing page, tap the message icon to open an in-app conversation with the seller. Once a transaction is complete, both parties are prompted to leave a <strong>star rating (1–5)</strong> and written review. Ratings build the seller's Trust Engine score visible to the whole community.</p></div>
+          </div>
+        </div>
+        <div class="doc-nav">
+          <div class="doc-nav-btn" onclick="selectSectionById('studybuddy')"><div class="dnb-label">Previous</div><div class="dnb-title">← StudyBuddy</div></div>
+          <div class="doc-nav-btn next" onclick="selectSectionById('housinghub')"><div class="dnb-label">Next</div><div class="dnb-title">Housing Hub →</div></div>
+        </div>
+      </div>
+
+      <!-- HOUSING HUB -->
+      <div id="sec-housinghub" class="content" style="display:none">
+        <div class="breadcrumb">Help Center <span class="bc-sep">›</span> Modules <span class="bc-sep">›</span> <span>Housing Hub</span></div>
+        <div class="page-header">
+          <div class="page-tag" style="background:#E0FBF6;color:#086B5A">🏠 &nbsp;Housing Hub</div>
+          <div class="page-title">Housing Hub — Accommodation & Roommates</div>
+          <div class="page-desc">Browse verified student accommodation near campus, find compatible roommates, and set up alerts for new listings that match your needs.</div>
+        </div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">1</span><span class="step-title">Browsing accommodation listings</span></div>
+            <div class="step-body">
+              <div class="mockup">
+                <div class="mockup-bar"><span class="mb-dot" style="background:#FF5F57"></span><span class="mb-dot" style="background:#FFBD2E"></span><span class="mb-dot" style="background:#28C840"></span><span class="mb-title">Housing Hub — Listings</span></div>
+                <div class="mockup-body">
+                  <div class="mock-row" style="margin-bottom:.6rem">
+                    <div class="mock-tag" style="background:var(--teal-soft);color:var(--teal)">All</div>
+                    <div class="mock-tag" style="background:#F3F4F6;color:var(--text-mid)">Bedsitter</div>
+                    <div class="mock-tag" style="background:#F3F4F6;color:var(--text-mid)">Single Room</div>
+                    <div class="mock-tag" style="background:#F3F4F6;color:var(--text-mid)">Shared</div>
+                  </div>
+                  <div class="mock-card" style="flex-direction:column;align-items:flex-start">
+                    <div style="display:flex;align-items:center;width:100%;gap:.5rem">
+                      <div style="width:36px;height:36px;background:#E0FBF6;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:18px">🏠</div>
+                      <div style="flex:1"><div class="mock-name">Cosy Bedsitter — Githurai 44</div><div class="mock-sub" style="color:var(--teal)">KSh 6,500/month</div></div>
+                      <div style="font-size:14px">♡</div>
+                    </div>
+                    <div class="mock-row" style="margin-top:.4rem">
+                      <div class="mock-tag" style="background:#E0FBF6;color:#07856F;font-size:9px">Water included</div>
+                      <div class="mock-tag" style="background:#E0FBF6;color:#07856F;font-size:9px">Security guard</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p>Tap <strong>Housing</strong> in the bottom bar → <strong>Browse Listings</strong>. Filter by property type, location, price range, and bedroom count. Tap a listing to see full details including map location, amenities, and available-from date. Tap the heart icon to save a listing.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">2</span><span class="step-title">Finding a compatible roommate</span></div>
+            <div class="step-body"><p>From the Housing Hub home, tap <strong>Roommate Match</strong>. Tap <strong>My Prefs</strong> to set your roommate preferences — budget range, preferred location, sleep schedule, cleanliness standard, noise level, and whether you're okay with pets or smoking. Tap <strong>Save &amp; Find Matches</strong> to see compatible verified student profiles.</p></div>
+          </div>
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">3</span><span class="step-title">Setting up housing alerts</span></div>
+            <div class="step-body"><p>Tap <strong>My Alerts</strong> from the Housing Hub home and toggle the Housing Module on. You'll receive automatic notifications whenever a new listing is posted that matches your saved preferences — area, maximum price, or property type. No need to keep checking manually.</p>
+            <div class="callout tip"><span class="callout-icon">✓</span>All accommodation listings on Housing Hub are verified and added by the CampusBuddy team, not by anonymous third parties.</div></div>
+          </div>
+        </div>
+        <div class="doc-nav">
+          <div class="doc-nav-btn" onclick="selectSectionById('campusmarket')"><div class="dnb-label">Previous</div><div class="dnb-title">← CampusMarket</div></div>
+          <div class="doc-nav-btn next" onclick="selectSectionById('eventboard')"><div class="dnb-label">Next</div><div class="dnb-title">EventBoard →</div></div>
+        </div>
+      </div>
+
+      <!-- EVENTBOARD -->
+      <div id="sec-eventboard" class="content" style="display:none">
+        <div class="breadcrumb">Help Center <span class="bc-sep">›</span> Modules <span class="bc-sep">›</span> <span>EventBoard</span></div>
+        <div class="page-header">
+          <div class="page-tag" style="background:#EDE9FF;color:#4B2FD4">📅 &nbsp;EventBoard</div>
+          <div class="page-title">EventBoard — Campus Events</div>
+          <div class="page-desc">Discover upcoming campus events, register your attendance, create your own events, and never miss an event with automatic reminders.</div>
+        </div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">1</span><span class="step-title">Discovering events & RSVP</span></div>
+            <div class="step-body">
+              <div class="mockup">
+                <div class="mockup-bar"><span class="mb-dot" style="background:#FF5F57"></span><span class="mb-dot" style="background:#FFBD2E"></span><span class="mb-dot" style="background:#28C840"></span><span class="mb-title">EventBoard — Upcoming</span></div>
+                <div class="mockup-body">
+                  <div class="mock-row">
+                    <div class="mock-tag" style="background:var(--purple-soft);color:var(--purple)">Upcoming (11)</div>
+                    <div class="mock-tag" style="background:#F3F4F6;color:var(--text-mid)">Past (8)</div>
+                  </div>
+                  <div class="mock-card" style="flex-direction:column;align-items:flex-start;margin-top:.5rem">
+                    <div style="display:flex;align-items:center;width:100%;gap:.5rem">
+                      <div style="width:36px;height:36px;background:var(--purple-soft);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:18px">🎉</div>
+                      <div style="flex:1"><div class="mock-name">Freshers Welcome Bash</div><div class="mock-sub">Apr 24, 5PM · Coupe main grounds · Free entry</div></div>
+                    </div>
+                    <div style="display:flex;gap:.4rem;margin-top:.4rem">
+                      <div class="mock-tag" style="background:var(--purple-soft);color:var(--purple);font-size:9px">Social</div>
+                      <button class="mock-btn primary" style="font-size:10px;padding:3px 10px">RSVP</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p>Tap <strong>Events</strong> in the bottom bar. Browse by category (Academic, Social, Sports, Career) or view the Event Calendar. Tap an event card to see full details, then tap <strong>RSVP</strong> to register. If an event is full, you'll join the waitlist automatically.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">2</span><span class="step-title">Saving events & setting reminders</span></div>
+            <div class="step-body"><p>On any event detail page, tap the <strong>bookmark icon</strong> to save the event to your personal list. Tap the <strong>bell icon</strong> to set a reminder — you'll receive an automatic notification 24 hours and 1 hour before the event starts.</p></div>
+          </div>
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">3</span><span class="step-title">Creating your own event</span></div>
+            <div class="step-body"><p>From the EventBoard home, tap <strong>Create Event</strong>. Upload a banner image, enter the event title and description, select a category, set start and end date/time, enter the venue, choose the mode (In-Person, Online, or Hybrid), and optionally set a maximum capacity. Tap <strong>Publish Event</strong> to make it live for all students to discover.</p></div>
+          </div>
+        </div>
+        <div class="doc-nav">
+          <div class="doc-nav-btn" onclick="selectSectionById('housinghub')"><div class="dnb-label">Previous</div><div class="dnb-title">← Housing Hub</div></div>
+          <div class="doc-nav-btn next" onclick="selectSectionById('buddybot')"><div class="dnb-label">Next</div><div class="dnb-title">buddy-bot →</div></div>
+        </div>
+      </div>
+
+      <!-- BUDDY-BOT -->
+      <div id="sec-buddybot" class="content" style="display:none">
+        <div class="breadcrumb">Help Center <span class="bc-sep">›</span> AI & Trust <span class="bc-sep">›</span> <span>buddy-bot</span></div>
+        <div class="page-header">
+          <div class="page-tag" style="background:#EDE9FF;color:#4B2FD4">🤖 &nbsp;buddy-bot</div>
+          <div class="page-title">buddy-bot — Your AI Study Assistant</div>
+          <div class="page-desc">buddy-bot is an always-available AI assistant powered by OpenAI. Ask it academic questions, request explanations, or get campus platform guidance.</div>
+        </div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">1</span><span class="step-title">How to access buddy-bot</span></div>
+            <div class="step-body">
+              <p>You can reach buddy-bot in two ways:</p>
+              <div style="display:flex;flex-direction:column;gap:.4rem;margin:.5rem 0">
+                <div style="display:flex;gap:.5rem;align-items:center;background:var(--purple-soft);border-radius:5px;padding:.4rem .6rem"><span style="font-size:12px">🏠</span><span style="font-size:12.5px;color:var(--purple);font-weight:500">Home screen</span><span style="font-size:12px;color:var(--text-mid)">— tap the floating robot button</span></div>
+                <div style="display:flex;gap:.5rem;align-items:center;background:var(--purple-soft);border-radius:5px;padding:.4rem .6rem"><span style="font-size:12px">📚</span><span style="font-size:12.5px;color:var(--purple);font-weight:500">StudyBuddy</span><span style="font-size:12px;color:var(--text-mid)">— tap "Buddy AI Help"</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">2</span><span class="step-title">What buddy-bot can help with</span></div>
+            <div class="step-body">
+              <div class="mockup">
+                <div class="mockup-bar"><span class="mb-dot" style="background:#FF5F57"></span><span class="mb-dot" style="background:#FFBD2E"></span><span class="mb-dot" style="background:#28C840"></span><span class="mb-title">buddy-bot — Chat</span></div>
+                <div class="mockup-body">
+                  <div style="background:var(--purple-soft);border-radius:5px;padding:.5rem .6rem;margin-bottom:.5rem;font-size:11.5px;color:var(--purple)">
+                    <div style="font-weight:600;margin-bottom:.2rem">🤖 Buddy — AI Study Assistant</div>
+                    Hey! I'm Buddy, your personal AI tutor. Ask me anything — maths, science, history, coding — and I'll explain it clearly, step by step.
+                  </div>
+                  <div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.5rem">
+                    <div class="mock-tag" style="background:#F3F4F6;color:var(--text-mid)">Explain the chain rule</div>
+                    <div class="mock-tag" style="background:#F3F4F6;color:var(--text-mid)">What is Big O notation?</div>
+                    <div class="mock-tag" style="background:#F3F4F6;color:var(--text-mid)">How do I use lists in Python?</div>
+                  </div>
+                  <div class="mock-field" style="border-color:var(--purple)">Ask Buddy anything…</div>
+                </div>
+              </div>
+              <p>buddy-bot is designed for <strong>academic questions</strong>, concept explanations, worked examples, code help, essay guidance, and general campus platform navigation. It is not connected to real-time internet data.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">3</span><span class="step-title">Tips for better results</span></div>
+            <div class="step-body">
+              <div class="callout info"><span class="callout-icon">ℹ</span>Be specific — instead of <em>"explain calculus"</em>, try <em>"Explain the chain rule with a worked example using f(x) = (3x+1)²"</em>. Specific questions get more useful answers.</div>
+              <p>Each conversation with buddy-bot is independent — it doesn't remember previous chats. If you need context from an earlier session, include it in your new message.</p>
+            </div>
+          </div>
+        </div>
+        <div class="doc-nav">
+          <div class="doc-nav-btn" onclick="selectSectionById('eventboard')"><div class="dnb-label">Previous</div><div class="dnb-title">← EventBoard</div></div>
+          <div class="doc-nav-btn next" onclick="selectSectionById('trustengine')"><div class="dnb-label">Next</div><div class="dnb-title">Trust Engine →</div></div>
+        </div>
+      </div>
+
+      <!-- TRUST ENGINE -->
+      <div id="sec-trustengine" class="content" style="display:none">
+        <div class="breadcrumb">Help Center <span class="bc-sep">›</span> AI & Trust <span class="bc-sep">›</span> <span>Trust Engine</span></div>
+        <div class="page-header">
+          <div class="page-tag" style="background:#E0FBF6;color:#086B5A">🛡️ &nbsp;Trust Engine</div>
+          <div class="page-title">Trust Engine — Verified & Accountable</div>
+          <div class="page-desc">The Trust Engine is CampusBuddy's built-in accountability system. It ensures every person you interact with is a verified student and has a visible reputation.</div>
+        </div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">1</span><span class="step-title">University email verification</span></div>
+            <div class="step-body"><p>When you register, CampusBuddy checks that your email domain matches an approved university. A one-time OTP code is sent — only students who verify this code can post listings, message peers, or access full platform features. Unverified accounts have restricted access.</p>
+            <div class="callout info"><span class="callout-icon">ℹ</span>Look for the <strong>blue verified badge</strong> on user profiles. This means the student has confirmed their university email.</div></div>
+          </div>
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">2</span><span class="step-title">Peer ratings & reviews</span></div>
+            <div class="step-body">
+              <div class="mock-card" style="border-color:var(--teal)">
+                <div class="mock-avatar" style="background:var(--purple)">VN</div>
+                <div>
+                  <div class="mock-name">Victoria Ndicu <span style="font-size:10px;background:var(--teal-soft);color:var(--teal);padding:1px 6px;border-radius:10px;margin-left:4px">✓ Verified</span></div>
+                  <div class="mock-sub">Software Engineering · Year 4</div>
+                </div>
+              </div>
+              <p style="margin-top:.5rem">After each qualifying interaction — a completed tutoring session, marketplace transaction, or housing arrangement — you'll be prompted to rate the other person from 1–5 stars. These ratings aggregate into a public profile score that future peers can see before deciding to engage.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-head"><span class="step-num">3</span><span class="step-title">Reporting a concern</span></div>
+            <div class="step-body"><p>If you encounter a listing or interaction that seems fraudulent or inappropriate, tap the <strong>Report</strong> option on any listing or profile page. The platform team reviews all reports. For urgent concerns, use the Feedback page — select <em>Report an Issue</em> as the feedback type.</p>
+            <div class="callout warn"><span class="callout-icon">!</span>Never share personal financial information (bank account details, M-Pesa PINs) in CampusBuddy chats. The platform does not process payments.</div></div>
+          </div>
+        </div>
+        <div class="doc-nav">
+          <div class="doc-nav-btn" onclick="selectSectionById('buddybot')"><div class="dnb-label">Previous</div><div class="dnb-title">← buddy-bot</div></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- FEEDBACK PAGE -->
+  <div id="feedback-page" class="layout" style="display:none">
+    <div class="fb-page">
+      <div class="fb-header">
+        <div class="page-tag" style="background:#EDE9FF;color:#4B2FD4;display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;margin-bottom:.75rem">💬 &nbsp;Feedback</div>
+        <div class="fb-title">Share your feedback</div>
+        <div class="fb-desc">Your input directly shapes how CampusBuddy improves. All submissions are reviewed by the platform team.</div>
+      </div>
+      <div id="fb-success" class="success-card" style="display:none">
+        <div class="success-icon">✅</div>
+        <div style="font-size:1rem;font-weight:600;color:#086B5A;margin-bottom:.25rem">Thank you for your feedback!</div>
+        <div style="font-size:13px;color:#0F6E56">Your submission has been received. We review all feedback and use it to make CampusBuddy better for every student.</div>
+        <button class="mock-btn outline" style="margin:.75rem auto 0;display:flex" onclick="resetFeedback()">Submit another response</button>
+      </div>
+      <div id="fb-form">
+        <div class="fb-card">
+          <label class="fb-label">How would you rate your overall experience?</label>
+          <div class="star-row" id="stars">
+            <span class="star" onclick="setRating(1)">★</span>
+            <span class="star" onclick="setRating(2)">★</span>
+            <span class="star" onclick="setRating(3)">★</span>
+            <span class="star" onclick="setRating(4)">★</span>
+            <span class="star" onclick="setRating(5)">★</span>
+          </div>
+          <div id="rating-label" style="font-size:12px;color:var(--text-muted);margin-top:.35rem;height:16px"></div>
+        </div>
+        <div class="fb-card">
+          <label class="fb-label">Which module does this feedback relate to?</label>
+          <div class="module-pills" id="module-pills">
+            <div class="module-pill" onclick="selectModule(this,'General')">General</div>
+            <div class="module-pill" onclick="selectModule(this,'StudyBuddy')">📚 StudyBuddy</div>
+            <div class="module-pill" onclick="selectModule(this,'CampusMarket')">🛒 CampusMarket</div>
+            <div class="module-pill" onclick="selectModule(this,'Housing Hub')">🏠 Housing Hub</div>
+            <div class="module-pill" onclick="selectModule(this,'EventBoard')">📅 EventBoard</div>
+            <div class="module-pill" onclick="selectModule(this,'buddy-bot')">🤖 buddy-bot</div>
+            <div class="module-pill" onclick="selectModule(this,'Trust Engine')">🛡️ Trust Engine</div>
+          </div>
+        </div>
+        <div class="fb-card">
+          <label class="fb-label">What type of feedback is this?</label>
+          <div class="type-grid">
+            <div class="type-card" onclick="selectType(this)"><div class="tc-icon">💡</div><div class="tc-title">Suggestion</div></div>
+            <div class="type-card" onclick="selectType(this)"><div class="tc-icon">🐛</div><div class="tc-title">Bug report</div></div>
+            <div class="type-card" onclick="selectType(this)"><div class="tc-icon">🚩</div><div class="tc-title">Report an issue</div></div>
+            <div class="type-card" onclick="selectType(this)"><div class="tc-icon">🌟</div><div class="tc-title">Compliment</div></div>
+          </div>
+        </div>
+        <div class="fb-card">
+          <div class="fb-row" style="margin-bottom:.75rem">
+            <div>
+              <label class="fb-label">Your name</label>
+              <input type="text" class="fb-input" placeholder="Victoria Ndicu" id="fb-name">
+            </div>
+            <div>
+              <label class="fb-label">Student email</label>
+              <input type="email" class="fb-input" placeholder="you@students.uni.ac.ke" id="fb-email">
+            </div>
+          </div>
+          <label class="fb-label">Your feedback</label>
+          <textarea class="fb-textarea" placeholder="Describe your experience, suggestion, or issue in as much detail as you can…" id="fb-message" oninput="updateCharCount(this)"></textarea>
+          <div class="char-count" id="char-count">0 / 500</div>
+        </div>
+        <button class="submit-btn" onclick="submitFeedback()">
+          Send Feedback &nbsp;→
+        </button>
+        <div style="text-align:center;font-size:11.5px;color:var(--text-muted);margin-top:.75rem">Feedback is reviewed by the CampusBuddy team at the Co-operative University of Kenya. We read every submission.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var currentSection = 'welcome';
+  var currentRating = 0;
+  var currentModule = null;
+  var currentType = null;
+
+  function showPage(page) {
+    document.getElementById('help-page').style.display = page==='help' ? 'flex' : 'none';
+    document.getElementById('feedback-page').style.display = page==='feedback' ? 'flex' : 'none';
+    document.querySelectorAll('.nav-tab').forEach(function(t,i){
+      t.classList.toggle('active', (i===0&&page==='help')||(i===1&&page==='feedback'));
+    });
+    if(page==='feedback') document.getElementById('fb-badge').style.display='none';
+  }
+
+  function selectSection(el, section) {
+    document.querySelectorAll('.sidebar-item').forEach(function(i){ i.classList.remove('active'); });
+    el.classList.add('active');
+    document.querySelectorAll('.content').forEach(function(c){ c.style.display='none'; });
+    var sec = document.getElementById('sec-'+section);
+    if(sec) sec.style.display='block';
+    currentSection = section;
+  }
+
+  function selectSectionById(section) {
+    var el = document.querySelector('[data-section="'+section+'"]');
+    if(el) selectSection(el, section);
+  }
+
+  function setRating(n) {
+    currentRating = n;
+    var stars = document.getElementById('stars').children;
+    var labels = ['','Poor','Fair','Good','Very good','Excellent!'];
+    for(var i=0;i<stars.length;i++) stars[i].classList.toggle('lit', i<n);
+    document.getElementById('rating-label').textContent = labels[n] || '';
+  }
+
+  function selectModule(el, mod) {
+    document.querySelectorAll('.module-pill').forEach(function(p){ p.classList.remove('selected'); });
+    el.classList.add('selected');
+    currentModule = mod;
+  }
+
+  function selectType(el) {
+    document.querySelectorAll('.type-card').forEach(function(c){ c.classList.remove('selected'); });
+    el.classList.add('selected');
+    currentType = el.querySelector('.tc-title').textContent;
+  }
+
+  function updateCharCount(el) {
+    var l = el.value.length;
+    document.getElementById('char-count').textContent = l + ' / 500';
+    if(l > 500) el.value = el.value.substring(0,500);
+  }
+
+  function submitFeedback() {
+    var name = document.getElementById('fb-name').value.trim();
+    var msg = document.getElementById('fb-message').value.trim();
+    if(!msg){ alert('Please write your feedback before submitting.'); return; }
+    document.getElementById('fb-form').style.display='none';
+    document.getElementById('fb-success').style.display='block';
+  }
+
+  function resetFeedback() {
+    document.getElementById('fb-form').style.display='block';
+    document.getElementById('fb-success').style.display='none';
+    document.getElementById('fb-name').value='';
+    document.getElementById('fb-email').value='';
+    document.getElementById('fb-message').value='';
+    document.getElementById('char-count').textContent='0 / 500';
+    currentRating=0; currentModule=null; currentType=null;
+    setRating(0);
+    document.querySelectorAll('.module-pill').forEach(function(p){p.classList.remove('selected');});
+    document.querySelectorAll('.type-card').forEach(function(c){c.classList.remove('selected');});
+  }
+</script>
